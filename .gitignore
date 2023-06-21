@@ -1,3 +1,19 @@
 
 .vs/
 *.cache
+.idea/
+MapDigit/obj/
+MapDigit.AJAX/bin/
+MapDigit.AJAX/obj/
+MapDigit.Drawing/bin/
+MapDigit.Drawing/obj/
+MapDigit.DrawingFP/bin/
+MapDigit.DrawingFP/obj/
+MapDigit.GIS/bin/
+MapDigit.GIS/obj/
+MapDigit/bin/
+MapDigit/obj/
+MapDigit.MapTileWriter/obj/
+MapDigit.MapTileWriter/bin/
+MapDigit.MapTile/bin/
+MapDigit.MapTile/obj/
