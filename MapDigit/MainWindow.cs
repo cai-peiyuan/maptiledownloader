@@ -139,7 +139,6 @@ namespace MapDigit
                 }
             }
             cboMapType.Text = "MICROSOFTMAP";
-
         }
 
 
