@@ -117,70 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="btnUp.Text" xml:space="preserve">
-    <value>上移</value>
-  </data>
-  <data name="btnLeft.Text" xml:space="preserve">
-    <value>左移</value>
-  </data>
-  <data name="btnReset.Text" xml:space="preserve">
-    <value>调整</value>
-  </data>
-  <data name="btnRight.Text" xml:space="preserve">
-    <value>右移</value>
-  </data>
-  <data name="btnDown.Text" xml:space="preserve">
-    <value>下移</value>
-  </data>
-  <data name="btnZoomIn.Text" xml:space="preserve">
-    <value>放大</value>
-  </data>
-  <data name="btnZoomOut.Text" xml:space="preserve">
-    <value>缩小</value>
-  </data>
-  <data name="btnGo.Text" xml:space="preserve">
-    <value>查找</value>
-  </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>选择下载区域</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>73, 19</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>终止序号</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>73, 19</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>起始序号</value>
-  </data>
-  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>314, 187</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>选择地图下载级别</value>
-  </data>
-  <data name="lblMapType.Text" xml:space="preserve">
-    <value>地图类型</value>
-  </data>
-  <data name="btnStart.Text" xml:space="preserve">
-    <value>开始</value>
-  </data>
-  <data name="btnStop.Text" xml:space="preserve">
-    <value>停止</value>
-  </data>
-  <data name="btnExit.Text" xml:space="preserve">
-    <value>退出</value>
-  </data>
-  <data name="btnLoad.Text" xml:space="preserve">
-    <value>加载文件</value>
-  </data>
-  <data name="btnServer.Text" xml:space="preserve">
-    <value>服务器</value>
-  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAMDAAAAEAIACoJQAAFgAAACgAAAAwAAAAYAAAAAEAIAAAAAAAACQAABMLAAATCwAAAAAAAAAA
@@ -346,8 +283,5 @@
         //+AAwAAgAP//4ADAACAB///wAMAAIAP///gAwAAgB////ADAACAP///+AMAAIA////4AwAAgH////wD
         AAA=
 </value>
-  </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>MapAbc离线地图工具 https://www.mapabc.com</value>
   </data>
 </root>

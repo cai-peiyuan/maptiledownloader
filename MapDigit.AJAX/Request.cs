@@ -173,7 +173,7 @@ namespace MapDigit.AJAX
         public void Cancel()
         {
             _interrupted = true;
-            Thread.Sleep(3000);
+            Thread.Sleep(100);
             if (_thread != null)
             {
                 _thread.Interrupt();

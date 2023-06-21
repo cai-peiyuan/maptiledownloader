@@ -27,8 +27,7 @@ namespace MapDigit.Drawing
     public override IImage CreateImage(Stream stream) {
         try {
             return NETImage.createImage(stream);
-        } catch (IOException ex) {
-           
+        } catch (IOException) {
         }
         return null;
     }

@@ -106,11 +106,8 @@ namespace MapDigit.GIS.Raster
          * @param mapTileDownloadManager map tile download manager.
          * @throws InvalidLicenceException invalid licence.
          */
-        public RasterMap(int width, int height, int mapType,
-                MapTileDownloadManager mapTileDownloadManager)
-            : base(width, height)
+        public RasterMap(int width, int height, int mapType, MapTileDownloadManager mapTileDownloadManager) : base(width, height)
         {
-
             this._mapType = mapType;//MapType.MAPABCCHINA;
             _mapTileReadyListener = new MapTileReadyListener(this);
 

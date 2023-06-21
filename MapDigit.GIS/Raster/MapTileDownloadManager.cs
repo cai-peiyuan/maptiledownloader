@@ -389,8 +389,7 @@ namespace MapDigit.GIS.Raster
 
         public byte[] GetFromImageCache(int mtype, int x, int y, int zoomLevel)
         {
-            string mapIndex = mtype + "|" + x + "|" +
-                              y + "|" + zoomLevel;
+            string mapIndex = mtype + "|" + x + "|" +  y + "|" + zoomLevel;
             lock (_imageCache)
             {
                 if (_imageCache.ContainsKey(mapIndex))
@@ -457,10 +456,7 @@ namespace MapDigit.GIS.Raster
          */
         internal IImage GetImage(int mtype, int x, int y, int zoomLevel)
         {
-            string key = mtype + "|" +
-                    x + "|" +
-                    y + "|" +
-                    zoomLevel;
+            string key = mtype + "|" + x + "|" + y + "|" + zoomLevel;
             IImage image;
             _lastestZoomLevel = zoomLevel;
             byte[] imageArray;
@@ -470,8 +466,7 @@ namespace MapDigit.GIS.Raster
             }
             if (imageArray == null)
             {
-                ImageTileIndex needToDownloadImageTileIndex
-                        = new ImageTileIndex();
+                ImageTileIndex needToDownloadImageTileIndex = new ImageTileIndex();
                 needToDownloadImageTileIndex.MapType = mtype;
                 needToDownloadImageTileIndex.XIndex = x;
                 needToDownloadImageTileIndex.YIndex = y;
@@ -1098,28 +1093,21 @@ namespace MapDigit.GIS.Raster
         {
             lock (_assignedImageTileDownloadListMutex)
             {
-                string key = imageTileIndex.MapType + "|" +
-                        imageTileIndex.XIndex + "|" +
-                        imageTileIndex.YIndex + "|" +
-                        imageTileIndex.MapZoomLevel;
+                string key = imageTileIndex.MapType + "|" + imageTileIndex.XIndex + "|" +  imageTileIndex.YIndex + "|" + imageTileIndex.MapZoomLevel;
                 object object3 = _imageCache[key];
                 object object1 = _imageTileDownloadList[key];
                 object object2 = _assignedImageTileDownloadList[key];
-
                 if (object3 == null && object1 == null && object2 == null)
                 {
-
                     ImageTileIndex newImagetileIndex = new ImageTileIndex();
                     newImagetileIndex.MapType = imageTileIndex.MapType;
                     newImagetileIndex.XIndex = imageTileIndex.XIndex;
                     newImagetileIndex.YIndex = imageTileIndex.YIndex;
                     newImagetileIndex.MapZoomLevel = imageTileIndex.MapZoomLevel;
-
                     _imageTileDownloadList.Add(key, newImagetileIndex);
                     lock (_syncObjectManager)
                     {
                         Monitor.Pulse(_syncObjectManager);
-
                     }
                 }
             }
@@ -1143,8 +1131,7 @@ namespace MapDigit.GIS.Raster
                     ICollection keys = _imageTileDownloadList.Keys;
                     foreach (object key in keys)
                     {
-                        imageTileIndex =
-                            (ImageTileIndex)_imageTileDownloadList[key];
+                        imageTileIndex = (ImageTileIndex)_imageTileDownloadList[key];
                         _imageTileDownloadList.Remove(key);
                         break;
                     }
@@ -1267,10 +1254,7 @@ namespace MapDigit.GIS.Raster
             {
                 try
                 {
-                    string key = imageTileIndex.MapType + "|" +
-                            imageTileIndex.XIndex + "|" +
-                            imageTileIndex.YIndex + "|" +
-                            imageTileIndex.MapZoomLevel;
+                    string key = imageTileIndex.MapType + "|" + imageTileIndex.XIndex + "|" + imageTileIndex.YIndex + "|" + imageTileIndex.MapZoomLevel;
                     IImage image = TileNotAvaiable;
                     if (_mapTileReader is MapDirectionRenderer)
                     {
@@ -1278,9 +1262,7 @@ namespace MapDigit.GIS.Raster
                         //this is a block methods,it returns when the download is done.
                         if (imageTileIndex.MapZoomLevel == _mapTileDownloadManager._lastestZoomLevel)
                         {
-                            image = mapDirectionRenderer.GetImage(
-                                    imageTileIndex.XIndex, imageTileIndex.YIndex,
-                                    imageTileIndex.MapZoomLevel);
+                            image = mapDirectionRenderer.GetImage( imageTileIndex.XIndex, imageTileIndex.YIndex, imageTileIndex.MapZoomLevel);
                         }
                         if (image == null)
                         {

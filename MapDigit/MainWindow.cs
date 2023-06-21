@@ -15,12 +15,11 @@ using MapDigit.GIS.Service;
 using MapDigit.MapTile;
 using MapDigit.MapTileWriter;
 using MapDigit.GIS.Vector;
-using MapTileIndex=MapDigit.MapTileWriter.MapTileIndex;
+using MapTileIndex = MapDigit.MapTileWriter.MapTileIndex;
 
 namespace MapDigit
 {
-    public partial class MainWindow : Form, IRequestListener, IMapDrawingListener, IReaderListener,
-        IGeocodingListener, IWritingProgressListener,IRoutingListener
+    public partial class MainWindow : Form, IRequestListener, IMapDrawingListener, IReaderListener, IGeocodingListener, IWritingProgressListener, IRoutingListener
     {
         private MapTileDownloadManager _mapTileDownloadManager;
         private RasterMap _rasterMap;
@@ -35,7 +34,9 @@ namespace MapDigit
         private Thread _downloadThread;
         private Thread _tileIndexThread;
         private readonly IList<MapTileIndex> _tileIndexList = new List<MapTileIndex>();
-        private readonly bool[] _mapZoomLevelSelected = new bool[18];
+
+        //选择需要下载的地图级别
+        private readonly bool[] _mapZoomLevelSelected = new bool[23];
         private long _totalCount;
         private delegate void DoneWithDownloading();
         private delegate void UpdateInfo(string message);
@@ -63,15 +64,16 @@ namespace MapDigit
                         newZ = mapTileIndex.ZoomLevel;
                         _tileIndexList.Clear();
 
-                    }else
+                    }
+                    else
                     {
-                        Thread.Sleep(5000);
+                        Thread.Sleep(100);
                     }
                 }
                 if (newZ != 0)
                 {
                     int oldZoom = _rasterMap.GetZoom();
-                    GeoLatLng latLng = MapLayer.FromPixelToLatLng(new GeoPoint(newX*256 + 128, newY*256 + 128), newZ);
+                    GeoLatLng latLng = MapLayer.FromPixelToLatLng(new GeoPoint(newX * 256 + 128, newY * 256 + 128), newZ);
                     if (newZ != oldZoom)
                     {
 
@@ -84,29 +86,19 @@ namespace MapDigit
 
                         GeoPoint pt2 = _rasterMap.FromLatLngToScreenPixel(latLng);
 
-                        _rasterMap.PanDirection((int) (pt1.X - pt2.X), (int) (pt1.Y - pt2.Y));
-
-
+                        _rasterMap.PanDirection((int)(pt1.X - pt2.X), (int)(pt1.Y - pt2.Y));
                     }
                 }
-
-
             }
-        
-    }
-
-
-
-
-
-
+        }
 
         private void UpdateStatus(string messsage)
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 BeginInvoke(new UpdateInfo(UpdateStatus), messsage);
-            }else
+            }
+            else
             {
                 lblStatus.Text = messsage;
             }
@@ -114,7 +106,9 @@ namespace MapDigit
 
         public MainWindow()
         {
+            //初始化UI组件等
             InitializeComponent();
+
             MapLayer.SetAbstractGraphicsFactory(NETGraphicsFactory.getInstance());
             _mapImage = MapLayer.GetAbstractGraphicsFactory().CreateImage(768, 768);
             _mapGraphics = _mapImage.GetGraphics();
@@ -127,29 +121,25 @@ namespace MapDigit
             _rasterMap.SetRoutingListener(this);
 
             // Get the configuration file.
-            System.Configuration.Configuration config =
-              ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            System.Configuration.Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
 
             // Get the AppSetins section.
-            AppSettingsSection appSettingSection =
-                (AppSettingsSection)config.GetSection("appSettings");
+            AppSettingsSection appSettingSection = (AppSettingsSection)config.GetSection("appSettings");
             MapType.MAP_TYPE_URLS.Clear();
 
             foreach (var obj in appSettingSection.Settings.AllKeys)
             {
                 var value = appSettingSection.Settings[obj];
-
-                object type=MapType.MAP_TYPE_NAMES[obj];
-                if(type!=null)
+                object type = MapType.MAP_TYPE_NAMES[obj];
+                if (type != null)
                 {
                     string url = value.Value.Replace('#', '&');
                     MapType.MAP_TYPE_URLS.Add(type, url);
                     cboMapType.Items.Add(obj);
                 }
-                
             }
             cboMapType.Text = "MICROSOFTMAP";
-  
+
         }
 
 
@@ -184,22 +174,22 @@ namespace MapDigit
             //getSet.GetMapMapFeatureLayer("5.lyr").FontColor = 0;
             //getSet.GetMapMapFeatureLayer("5.lyr").FontName = "Arial";
 
-           // VectorMapRenderer vectorMapRenderer = new VectorMapRenderer(getSet);
+            // VectorMapRenderer vectorMapRenderer = new VectorMapRenderer(getSet);
             _mapTileDownloadManager = new MapTileDownloadManager(this, localMapTileFileReader);
- 
-           // getSet.Open();
+
+            // getSet.Open();
 
 
- 
-           
+
+
         }
 
         public void ReadProgress(object context, int bytes, int total)
         {
-           if(total!=0)
-           {
-               UpdateStatus("Reading ..." + (int) (((double) bytes/(double) total)*100.0) + "%");
-           }
+            if (total != 0)
+            {
+                UpdateStatus("Reading ..." + (int)(((double)bytes / (double)total) * 100.0) + "%");
+            }
         }
 
         public void WriteProgress(object context, int bytes, int total)
@@ -209,12 +199,12 @@ namespace MapDigit
 
         public void Done(object context, Response result)
         {
-            
+
         }
 
         public void Done(object context, string rawResult)
         {
-            
+
         }
 
 
@@ -223,7 +213,8 @@ namespace MapDigit
             if (result != null)
             {
                 _rasterMap.SetCenter(result[0].Point, 15, _rasterMap.GetMapType());
-            }else
+            }
+            else
             {
                 UpdateStatus("Address not found!");
             }
@@ -231,7 +222,7 @@ namespace MapDigit
 
         public void Done(string query, MapDirection result)
         {
-            if(result!=null)
+            if (result != null)
             {
                 _rasterMap.Resize(result.GetBound());
             }
@@ -239,47 +230,47 @@ namespace MapDigit
 
         public void readProgress(int bytes, int total)
         {
-            if(total!=0)
-           {
-               UpdateStatus("Reading ...");
-           }
+            if (total != 0)
+            {
+                UpdateStatus("Reading ...");
+            }
         }
 
-   
+
         public void Done()
         {
             _downloadThread = null;
             _rasterMap.Paint(_mapGraphics);
             picMapCanvas.Image = (Image)_mapImage.GetNativeImage();
             UpdateStatus("");
- 
-    
+
+
         }
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
             var center = new GeoLatLng(32.0176410, 118.7273120);
             _rasterMap.SetCenter(center, 2, _rasterMap.GetMapType());
-            btnReset_Click(sender,e);
+            btnReset_Click(sender, e);
         }
 
         private void MainWindow_FormClosed(object sender, FormClosedEventArgs e)
         {
             _mapTileDownloadManager.Stop();
-           if(_downloadThread!=null)
+            if (_downloadThread != null)
             {
                 _downloadThread.Abort();
             }
-            if(_tileIndexThread!=null)
+            if (_tileIndexThread != null)
             {
                 _tileIndexThread.Abort();
             }
-           
+
         }
 
         private void btnUp_Click(object sender, EventArgs e)
         {
-            _rasterMap.PanDirection(0,64);
+            _rasterMap.PanDirection(0, 64);
         }
 
         private void btnDown_Click(object sender, EventArgs e)
@@ -298,17 +289,17 @@ namespace MapDigit
             _rasterMap.PanDirection(-64, 0);
         }
 
-       
+
         private void btnZoomIn_Click(object sender, EventArgs e)
         {
             _rasterMap.ZoomIn();
-  
+
         }
 
         private void btnZoomOut_Click(object sender, EventArgs e)
         {
             _rasterMap.ZoomOut();
-  
+
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -323,7 +314,7 @@ namespace MapDigit
                 _rasterMap.GetLocations(txtAddress.Text);
 
             }
-            
+
         }
 
         private void btnReset_Click(object sender, EventArgs e)
@@ -346,10 +337,11 @@ namespace MapDigit
                 int y1 = int.Parse(txtY1.Text);
                 int x2 = int.Parse(txtX2.Text);
                 int y2 = int.Parse(txtY2.Text);
-                _rasterMap.SelectedMapTileArea = new GeoBounds(x1, y1, Math.Abs(x2 - x1)+1, Math.Abs(y2 - y1)+1);
-                _rasterMap.SetCenter(_rasterMap.GetScreenCenter(),_rasterMap.GetZoom());
-                
-            }catch
+                _rasterMap.SelectedMapTileArea = new GeoBounds(x1, y1, Math.Abs(x2 - x1) + 1, Math.Abs(y2 - y1) + 1);
+                _rasterMap.SetCenter(_rasterMap.GetScreenCenter(), _rasterMap.GetZoom());
+
+            }
+            catch
             {
             }
         }
@@ -369,11 +361,24 @@ namespace MapDigit
             ResetSelectedArea();
         }
 
+
+        private void picMapCanvas_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (e.Delta > 0)
+            {
+                _rasterMap.ZoomIn();
+            }
+            else
+            {
+                _rasterMap.ZoomOut();
+            }
+        }
+
         private void picMapCanvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if(e.Button==MouseButtons.Left)
+            if (e.Button == MouseButtons.Left)
             {
-                _rasterMap.PanDirection(e.X-_oldX,e.Y-_oldY);
+                _rasterMap.PanDirection(e.X - _oldX, e.Y - _oldY);
 
             }
             else if (e.Button == MouseButtons.Right)
@@ -381,8 +386,8 @@ namespace MapDigit
                 _rasterMap.SetSelectedArea(_selectX, _selectY, Math.Abs(e.X - _selectX), Math.Abs(e.Y - _selectY));
                 txtX1.Text = ((int)_rasterMap.SelectedMapTileArea.X).ToString();
                 txtY1.Text = ((int)_rasterMap.SelectedMapTileArea.Y).ToString();
-                txtX2.Text = ((int)(_rasterMap.SelectedMapTileArea.X + _rasterMap.SelectedMapTileArea.Width-1)).ToString();
-                txtY2.Text = ((int)(_rasterMap.SelectedMapTileArea.Y + _rasterMap.SelectedMapTileArea.Height-1)).ToString();
+                txtX2.Text = ((int)(_rasterMap.SelectedMapTileArea.X + _rasterMap.SelectedMapTileArea.Width - 1)).ToString();
+                txtY2.Text = ((int)(_rasterMap.SelectedMapTileArea.Y + _rasterMap.SelectedMapTileArea.Height - 1)).ToString();
                 lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
             }
             _oldX = e.X;
@@ -392,18 +397,18 @@ namespace MapDigit
 
         private void picMapCanvas_MouseDown(object sender, MouseEventArgs e)
         {
-            
+
             _oldX = e.X;
             _oldY = e.Y;
             _selectX = e.X;
             _selectY = e.Y;
         }
 
-        private delegate void UpdateMessageDelegate(string message,long index);
+        private delegate void UpdateMessageDelegate(string message, long index);
         private int _messageLine;
 
 
-        private void UpdateMessage(string message,long index)
+        private void UpdateMessage(string message, long index)
         {
             txtMessage.Text = txtMessage.Text + "\r\n" + message;
             _messageLine++;
@@ -412,21 +417,21 @@ namespace MapDigit
                 _messageLine = 0;
                 txtMessage.Text = "";
             }
-            if (_totalCount!=0)
-            progressDownload.Value =(int) (index*100/_totalCount);
- 
+            if (_totalCount != 0)
+                progressDownload.Value = (int)(index * 100 / _totalCount);
+
         }
 
 
 
 
-        public void AddMessage(string message,long index)
+        public void AddMessage(string message, long index)
         {
             if (!this.Disposing)
             {
                 if (txtMessage.InvokeRequired)
                 {
-                    txtMessage.Invoke(new UpdateMessageDelegate(UpdateMessage), new object[] {message, index});
+                    txtMessage.Invoke(new UpdateMessageDelegate(UpdateMessage), new object[] { message, index });
                 }
                 else
                 {
@@ -436,8 +441,8 @@ namespace MapDigit
         }
 
 
-        
-       
+
+
 
         public void Progress(long index, int x, int y, int z, bool failed)
         {
@@ -447,20 +452,21 @@ namespace MapDigit
                 _tileIndexList.Add(mapTileIndex);
 
             }
-            AddMessage("Downloaded " + (index + 1) + "," + "X=" + x + ",Y=" + y + ",Z=" + z + (!failed ? " OK" : " Fail"),index);
+            AddMessage("Downloaded " + (index + 1) + "," + "X=" + x + ",Y=" + y + ",Z=" + z + (!failed ? " OK" : " Fail"), index);
         }
 
         private void FinishDownloading()
         {
-            if(InvokeRequired)
+            if (InvokeRequired)
             {
                 BeginInvoke(new DoneWithDownloading(FinishDownloading));
-            }else
+            }
+            else
             {
                 AddMessage("Finished writing!!", _totalCount);
                 btnStart.Enabled = true;
                 btnStop.Enabled = false;
-                _downloadThread = null; 
+                _downloadThread = null;
             }
             stopThread = true;
             if (_tileIndexThread != null)
@@ -474,23 +480,27 @@ namespace MapDigit
         public void FinishWriting()
         {
             FinishDownloading();
-            
+
         }
 
+        /**
+         * 将切图数据写入文件
+         */
         private void WriteToMapFile()
         {
             var startX = (int)_rasterMap.SelectedMapTileArea.X;
             var startY = (int)_rasterMap.SelectedMapTileArea.Y;
-            var endX = (int)(_rasterMap.SelectedMapTileArea.X + _rasterMap.SelectedMapTileArea.Width-1);
-            var endY = (int)(_rasterMap.SelectedMapTileArea.Y + _rasterMap.SelectedMapTileArea.Height-1);
+            var endX = (int)(_rasterMap.SelectedMapTileArea.X + _rasterMap.SelectedMapTileArea.Width - 1);
+            var endY = (int)(_rasterMap.SelectedMapTileArea.Y + _rasterMap.SelectedMapTileArea.Height - 1);
 
-            _mapTileWrite = new MapTileWriter.MapTileWriter(startX, startY, endX, endY, _rasterMap.GetZoom(), _rasterMap.GetMapType(),
-                                                           _mapTileDownloadManager)
-                                {ZoomLevelSelected = _mapZoomLevelSelected};
+            _mapTileWrite = new MapTileWriter.MapTileWriter(startX, startY, endX, endY, _rasterMap.GetZoom(), _rasterMap.GetMapType(), _mapTileDownloadManager)
+            {
+                ZoomLevelSelected = _mapZoomLevelSelected
+            };
 
             _mapTileWrite.SetWritingProgressListener(this);
-    
-            _mapTileWrite.WriteMapTileFile();  
+
+            _mapTileWrite.WriteMapTileFile();
         }
 
         private void btnStart_Click(object sender, EventArgs e)
@@ -502,18 +512,18 @@ namespace MapDigit
             _downloadThread.Start();
             _tileIndexThread = new Thread(ProcessTileIndex);
             _tileIndexThread.Start();
-            
+
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
             var openFileDialog1 = new OpenFileDialog
-                                                 {
-                                                     InitialDirectory = "c:\\",
-                                                     Filter = "map files (*.map)|*.map|All files (*.*)|*.*",
-                                                     FilterIndex = 2,
-                                                     RestoreDirectory = true
-                                                 };
+            {
+                InitialDirectory = "c:\\",
+                Filter = "map files (*.map)|*.map|All files (*.*)|*.*",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
 
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -523,7 +533,7 @@ namespace MapDigit
                     GC.Collect();
                     string fileName = openFileDialog1.FileName;
                     var localMapTileFileReader = new MapTileStoredDataSource(fileName);
-                    
+
                     _mapTileDownloadManager = new MapTileDownloadManager(this, localMapTileFileReader);
                     _mapTileDownloadManager.Start();
                     GeoLatLng center = _rasterMap.GetScreenCenter();
@@ -533,7 +543,7 @@ namespace MapDigit
                     _rasterMap.SetCenter(center, zoom);
                     _rasterMap.SetMapDrawingListener(this);
                     _rasterMap.SetGeocodingListener(this);
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -656,9 +666,43 @@ namespace MapDigit
             lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
         }
 
+
+        private void chk18_CheckedChanged(object sender, EventArgs e)
+        {
+            _mapZoomLevelSelected[18] = chk18.Checked;
+            lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
+        }
+
+
+        private void chk19_CheckedChanged(object sender, EventArgs e)
+        {
+            _mapZoomLevelSelected[19] = chk19.Checked;
+            lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
+        }
+
+
+        private void chk20_CheckedChanged(object sender, EventArgs e)
+        {
+            _mapZoomLevelSelected[20] = chk20.Checked;
+            lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
+        }
+
+
+        private void chk21_CheckedChanged(object sender, EventArgs e)
+        {
+            _mapZoomLevelSelected[21] = chk21.Checked;
+            lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
+        }
+
+
+        private void chk22_CheckedChanged(object sender, EventArgs e)
+        {
+            _mapZoomLevelSelected[22] = chk22.Checked;
+            lblMessage.Text = "Totally " + CalculateHowManyTiles() + " tiles will be downloaded!";
+        }
+
         public long CalculateHowManyTiles()
         {
-            
             try
             {
                 int startIndexX = (int)_rasterMap.SelectedMapTileArea.X;
@@ -666,24 +710,25 @@ namespace MapDigit
                 int endIndexX = (int)(_rasterMap.SelectedMapTileArea.X + _rasterMap.SelectedMapTileArea.Width);
                 int endIndexY = (int)(_rasterMap.SelectedMapTileArea.Y + _rasterMap.SelectedMapTileArea.Height);
                 int howManyLevel = 0;
-                int selectedMapIndex = (endIndexX  - startIndexX)*(endIndexY - startIndexY);
+                int selectedMapIndex = (endIndexX - startIndexX) * (endIndexY - startIndexY);
                 int zoomLevel = _rasterMap.GetZoom();
-                for (int level = zoomLevel; level < 18; level++)
+                for (int level = zoomLevel; level < 23; level++)
                 {
                     if (_mapZoomLevelSelected[level])
                     {
-                        howManyLevel += (int) Math.Pow(4, level - zoomLevel);
+                        howManyLevel += (int)Math.Pow(4, level - zoomLevel);
                     }
                 }
 
                 long howMayTiles = howManyLevel * selectedMapIndex;
                 _totalCount = howMayTiles;
                 return howMayTiles;
-            }catch
-            {
-                
             }
-               
+            catch
+            {
+
+            }
+
             return 0;
 
         }
@@ -692,9 +737,9 @@ namespace MapDigit
         {
             string strType = cboMapType.Text;
             object mtype = MapType.MAP_TYPE_NAMES[strType];
-            if(mtype!=null)
+            if (mtype != null)
             {
-                _mapType = (int) mtype;
+                _mapType = (int)mtype;
                 _rasterMap.SetMapType(_mapType);
             }
         }
@@ -715,8 +760,13 @@ namespace MapDigit
             }
             btnStart.Enabled = true;
             btnStop.Enabled = false;
-          
-            
+
+
+        }
+
+        private void picMapCanvas_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
