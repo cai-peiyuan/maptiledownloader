@@ -38,14 +38,14 @@ namespace MapDigit.GIS.Raster
         public GeoBounds SelectedMapTileArea = new GeoBounds(0, 0, 0, 0);
 
 
-        public void SetSelectedArea(int x,int y,int width,int height)
+        public void SetSelectedArea(int x, int y, int width, int height)
         {
             GeoLatLng latLng1 = FromScreenPixelToLatLng(new GeoPoint(x, y));
-            GeoLatLng latLng2 = FromScreenPixelToLatLng(new GeoPoint(x+width, y+height));
+            GeoLatLng latLng2 = FromScreenPixelToLatLng(new GeoPoint(x + width, y + height));
             GeoPoint index1 = ConvertCoordindates2Tiles(latLng1.Lat(), latLng1.Lng(), GetZoom());
             GeoPoint index2 = ConvertCoordindates2Tiles(latLng2.Lat(), latLng2.Lng(), GetZoom());
-            GeoBounds bounds = new GeoBounds(index1.X, index1.Y, Math.Abs(index2.X - index1.X)+1,
-                                                Math.Abs(index2.Y - index1.Y)+1);
+            GeoBounds bounds = new GeoBounds(index1.X, index1.Y, Math.Abs(index2.X - index1.X) + 1,
+                                                Math.Abs(index2.Y - index1.Y) + 1);
             if (!(bounds.X == SelectedMapTileArea.X &&
                 bounds.Y == SelectedMapTileArea.Y &&
                 bounds.Width == SelectedMapTileArea.Width &&
@@ -121,9 +121,9 @@ namespace MapDigit.GIS.Raster
             //to avoid new /gc so ,these temp vairables are heavily used.
             _centerRect = new GeoBounds(0, 0, 0, 0);
             _drawRect = new GeoBounds(0, 0, 0, 0);
-            _mapRects = new GeoBounds[16];
-            _newMapRects = new GeoBounds[16];
-            for (int i = 0; i < 16; i++)
+            _mapRects = new GeoBounds[23];
+            _newMapRects = new GeoBounds[23];
+            for (int i = 0; i < 23; i++)
             {
                 _mapRects[i] = new GeoBounds(0, 0, 0, 0);
                 _newMapRects[i] = new GeoBounds(0, 0, 0, 0);
@@ -133,9 +133,7 @@ namespace MapDigit.GIS.Raster
             _mapRectangle = new Rectangle(0, 0, width, height);
             _screenOffsetX = (GetMapWidth() - _screenSize.Width) / 2;
             _screenOffsetY = (GetMapHeight() - _screenSize.Height) / 2;
-            _screenRectangle = new Rectangle(0, 0, _screenSize.Width,
-                    _screenSize.Height);
-           
+            _screenRectangle = new Rectangle(0, 0, _screenSize.Width, _screenSize.Height);
         }
 
 
@@ -416,7 +414,7 @@ namespace MapDigit.GIS.Raster
             graphics.DrawImage(_mapImage,
                            -_screenOffsetX,
                            -_screenOffsetY);
-            graphics.DrawString("Zoom:"+ GetZoom(),16,GetMapHeight()-32);
+            graphics.DrawString("Zoom:" + GetZoom(), 16, GetMapHeight() - 32);
         }
 
         ////////////////////////////////////////////////////////////////////////////
@@ -775,9 +773,9 @@ namespace MapDigit.GIS.Raster
                                             _mapGraphics.SetColor(0x4f0000FF);
                                             _mapGraphics.FillRect(destX, destY, srcWidth, srcHeight);
                                         }
-                                        _mapGraphics.DrawString("("+(xIndex % maxTile)+","+(yIndex % maxTile)+")",destX,destY );
-                                       
- 
+                                        _mapGraphics.DrawString("(" + (xIndex % maxTile) + "," + (yIndex % maxTile) + ")", destX, destY);
+
+
                                         string inMapCanvsKey =
                                                 mapSequences[mapSequenceIndex] + "|" + (xIndex % maxTile) + "|" + (yIndex % maxTile) + "|" + _mapZoomLevel;
                                         GeoPoint mapCavasIndex = new GeoPoint(xIndex, yIndex);
@@ -879,7 +877,7 @@ namespace MapDigit.GIS.Raster
                                         _mapGraphics.FillRect(destX, destY, srcWidth, srcHeight);
                                     }
                                     _mapGraphics.DrawString("(" + (xIndex % maxTile) + "," + (yIndex % maxTile) + ")", destX, destY);
-                      
+
                                     string inMapCanvsKey = mapSequences[mapSequenceIndex] + "|" + (xIndex % maxTile) + "|" + (yIndex % maxTile) + "|" + _mapZoomLevel;
                                     GeoPoint mapCavasIndex = new GeoPoint(xIndex, yIndex);
                                     if (!_whatsInMapCanvas.ContainsKey(inMapCanvsKey))
@@ -1057,7 +1055,7 @@ namespace MapDigit.GIS.Raster
                                                             _mapGraphics.FillRect(destX, destY, srcWidth, srcHeight);
                                                         }
                                                         _mapGraphics.DrawString("(" + (xIndex % maxTile) + "," + (yIndex % maxTile) + ")", destX, destY);
-                                    
+
 
                                                     }
                                                     else
@@ -1118,7 +1116,7 @@ namespace MapDigit.GIS.Raster
                                                             _mapGraphics.FillRect(destX, destY, srcWidth, srcHeight);
                                                         }
                                                         _mapGraphics.DrawString("(" + (xIndex % maxTile) + "," + (yIndex % maxTile) + ")", destX, destY);
-                
+
 
                                                     }
                                                 }
@@ -1141,7 +1139,7 @@ namespace MapDigit.GIS.Raster
                                                             _mapGraphics.FillRect(destX, destY, srcWidth, srcHeight);
                                                         }
                                                         _mapGraphics.DrawString("(" + (xIndex % maxTile) + "," + (yIndex % maxTile) + ")", destX, destY);
-                        
+
 
                                                         //check to see need to remove the route image.
                                                         bool needRemoveRoutingImage = true;
@@ -1278,8 +1276,6 @@ namespace MapDigit.GIS.Raster
 
                                             }
 
-
-
                                         }
 
                                     }
@@ -1348,8 +1344,7 @@ namespace MapDigit.GIS.Raster
                         center.Y - _screenSize.Height / 2.0,
                         _screenSize.Width, _screenSize.Height);
 
-                for (xIndex = (int)topLeftIndex.X;
-                xIndex <= bottomRightIndex.X; xIndex++)
+                for (xIndex = (int)topLeftIndex.X; xIndex <= bottomRightIndex.X; xIndex++)
                 {
                     for (yIndex = (int)topLeftIndex.Y;
                     yIndex <= bottomRightIndex.Y; yIndex++)
