@@ -46,7 +46,7 @@ namespace MapDigit.GIS
         /**
          * Max map zoom Level
          */
-        public const int MAX_ZOOMLEVEL = 17;
+        public const int MAX_ZOOMLEVEL = 22;
 
         /**
          * Min map zoom Level
